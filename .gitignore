@@ -1,11 +1,15 @@
+# Environment variables - MOST IMPORTANT
+.env
+.env*.local
+
 # Dependencies
-/node_modules
+/frontend/node_modules
 /backend/target/
 
 # Next.js build outputs
-/.next/
-/out/
-/build
+/frontend/.next/
+/frontend/out/
+/frontend/build/
 
 # Log files
 *.log
@@ -14,26 +18,18 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# Environment files (IMPORTANT: Keep these ignored)
-.env*
-!.env.example
-
 # IDE and system files
 .idea/
 *.iml
 .vscode/
 .DS_Store
 
-# Vercel
+# Vercel deployment folder
 .vercel
 
-# TypeScript
+# TypeScript cache and types
 *.tsbuildinfo
 next-env.d.ts
 
-# ... all the other rules ...
-
 # Ignore local backend configuration with secrets
-backend/src/main/resources/application.properties
-
-.env
+/backend/src/main/resources/application.properties
