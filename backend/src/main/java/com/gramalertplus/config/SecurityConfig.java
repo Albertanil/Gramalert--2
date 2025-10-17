@@ -42,28 +42,32 @@ public class SecurityConfig {
         return source;
     }
 
-    @Bean
+@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
+                // Publicly accessible endpoints
                 .requestMatchers("/auth/login", "/auth/register", "/ws/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/alerts").permitAll()
                 
+                // --- THIS IS THE FIX ---
+                // Changed .hasRole() to .hasAuthority() for all role checks
                 .requestMatchers("/api/users/**").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/alerts").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/alerts/**").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/alerts/**").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.PATCH, "/grievances/**").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/grievances/**").hasAuthority("ADMIN")
-                
+
+                .requestMatchers("/grievances/my-requests").hasAuthority("VILLAGER")
+
+                // Authenticated user endpoints
                 .requestMatchers(HttpMethod.GET, "/grievances").authenticated()
                 .requestMatchers(HttpMethod.POST, "/grievances").authenticated() 
                 .requestMatchers(HttpMethod.PUT, "/grievances/**").authenticated()
-
-            
                 .requestMatchers(HttpMethod.PUT, "/api/profile/me").authenticated()
                 
                 .anyRequest().authenticated()
@@ -73,4 +77,3 @@ public class SecurityConfig {
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-}
