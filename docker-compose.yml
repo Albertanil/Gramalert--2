@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  db:
+    # ... (no changes here)
+    image: postgres:15-alpine
+    container_name: gramalert-db
+    environment:
+      POSTGRES_USER: gramalert
+      POSTGRES_PASSWORD: your_new_db_password # Use a new password
+      POSTGRES_DB: gramalertdb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: ./backend
+    container_name: backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/gramalertdb
+      # --- ADD THESE VARIABLES ---
+      - SPRING_DATASOURCE_USERNAME=gramalert
+      - SPRING_DATASOURCE_PASSWORD=your_new_db_password # Must match the db service
+      - JWT_SECRET=your_new_super_secret_jwt_key_here # Use your new generated key
+
+  frontend:
+    # ... (no changes here)
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8080
+    container_name: gramalert-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
