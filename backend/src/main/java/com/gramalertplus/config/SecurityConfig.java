@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -28,6 +30,11 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
     
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -42,7 +49,7 @@ public class SecurityConfig {
         return source;
     }
 
-@Bean
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -53,8 +60,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/alerts").permitAll()
                 
-                // --- THIS IS THE FIX ---
-                // Changed .hasRole() to .hasAuthority() for all role checks
+                // Admin-only endpoints
                 .requestMatchers("/api/users/**").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/alerts").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/alerts/**").hasAuthority("ADMIN")
@@ -62,6 +68,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PATCH, "/grievances/**").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/grievances/**").hasAuthority("ADMIN")
 
+                // Villager-only endpoints
                 .requestMatchers("/grievances/my-requests").hasAuthority("VILLAGER")
 
                 // Authenticated user endpoints
@@ -77,3 +84,4 @@ public class SecurityConfig {
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+} 
