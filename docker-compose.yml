@@ -2,13 +2,13 @@ version: '3.8'
 
 services:
   db:
-    # ... (no changes here)
     image: postgres:15-alpine
     container_name: gramalert-db
     environment:
-      POSTGRES_USER: gramalert
-      POSTGRES_PASSWORD: your_new_db_password # Use a new password
-      POSTGRES_DB: gramalertdb
+      # These now read from the .env file
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -23,14 +23,13 @@ services:
     depends_on:
       - db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/gramalertdb
-      # --- ADD THESE VARIABLES ---
-      - SPRING_DATASOURCE_USERNAME=gramalert
-      - SPRING_DATASOURCE_PASSWORD=your_new_db_password # Must match the db service
-      - JWT_SECRET=your_new_super_secret_jwt_key_here # Use your new generated key
+      # These now read from the .env file
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${POSTGRES_DB}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
 
   frontend:
-    # ... (no changes here)
     build:
       context: ./frontend
       args:

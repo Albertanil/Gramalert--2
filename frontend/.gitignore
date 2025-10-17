@@ -35,3 +35,5 @@ next-env.d.ts
 
 # Ignore local backend configuration with secrets
 backend/src/main/resources/application.properties
+
+.env
