@@ -5,7 +5,7 @@
 import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
-import { useAuth } from "@/lib/auth-context" // Corrected import path
+import { useAuth } from "@/lib/auth-context" 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -105,17 +105,8 @@ export default function LoginPage() {
               </Link>
             </div>
 
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <p className="text-sm font-semibold text-blue-900 mb-2">Demo Credentials:</p>
-              <div className="text-xs text-blue-800 space-y-1">
-                <p>
-                  <strong>Villager:</strong> villager / password
-                </p>
-                <p>
-                  <strong>Admin:</strong> admin / password
-                </p>
-              </div>
-            </div>
+            {/* The demo credentials block has been removed */}
+
           </CardContent>
         </Card>
 
