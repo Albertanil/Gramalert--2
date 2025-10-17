@@ -52,17 +52,18 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/alerts").permitAll()
                 
-                .requestMatchers("/api/users/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/alerts").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/alerts/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/alerts/**").hasRole("ADMIN")
+                .requestMatchers("/api/users/**").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/alerts").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/alerts/**").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/alerts/**").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/grievances/**").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/grievances/**").hasAuthority("ADMIN")
                 
-                .requestMatchers("/grievances/my-requests").hasRole("VILLAGER")
                 .requestMatchers(HttpMethod.GET, "/grievances").authenticated()
                 .requestMatchers(HttpMethod.POST, "/grievances").authenticated() 
                 .requestMatchers(HttpMethod.PUT, "/grievances/**").authenticated()
-                .requestMatchers(HttpMethod.PATCH, "/grievances/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/grievances/**").hasRole("ADMIN")
+
+            
                 .requestMatchers(HttpMethod.PUT, "/api/profile/me").authenticated()
                 
                 .anyRequest().authenticated()
