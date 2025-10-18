@@ -36,8 +36,7 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
 
-    private Claims getAllClaimsFromToken(String token) {
-        // Use the new, secure key for parsing
+    public Claims getAllClaimsFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody();
     }
 
