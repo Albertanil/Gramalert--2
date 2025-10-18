@@ -10,8 +10,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -30,8 +28,6 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
-
-  
     
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -53,11 +49,11 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 // Publicly accessible endpoints
-                .requestMatchers("/auth/login", "/auth/register", "/ws/**").permitAll()
+                .requestMatchers("/auth/login", "/auth/register").permitAll()
                 .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/alerts").permitAll()
                 
-                // Admin-only endpoints
+              
                 .requestMatchers("/api/users/**").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/alerts").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/alerts/**").hasAuthority("ADMIN")
@@ -65,7 +61,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PATCH, "/grievances/**").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/grievances/**").hasAuthority("ADMIN")
 
-                // Villager-only endpoints
+                
                 .requestMatchers("/grievances/my-requests").hasAuthority("VILLAGER")
 
                 // Authenticated user endpoints
@@ -73,7 +69,10 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/grievances").authenticated() 
                 .requestMatchers(HttpMethod.PUT, "/grievances/**").authenticated()
                 .requestMatchers(HttpMethod.PUT, "/api/profile/me").authenticated()
+
                 
+                .requestMatchers("/ws/**").permitAll()
+
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -81,4 +80,4 @@ public class SecurityConfig {
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-} 
+}
