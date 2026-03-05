@@ -1,10 +1,10 @@
-# GramAlert Plus
+# GramAlert 
 
 A full-stack rural governance platform connecting villagers with their local panchayat for utility alerts and grievance management.
 
 ## Project Overview
 
-GramAlert Plus enables:
+GramAlert  enables:
 - **Utility Alerts**: Panchayat admins post notices about power/water outages, road closures, and health warnings
 - **Grievance Submission**: Villagers submit issues with photos, location, and category
 - **Status Tracking**: Real-time tracking from Received → In Progress → Resolved
